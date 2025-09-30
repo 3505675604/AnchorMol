@@ -98,7 +98,7 @@ def generate_3d_mol(smile):
         return mol
     except:
         return None
-
+#3D feature extraction case, please replace it with the corresponding 3DDimeNet
 def get_3d_descriptors(mol):
     """
     Calculate 10 types of 3D molecular descriptors for a molecule.

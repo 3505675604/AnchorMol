@@ -2,6 +2,7 @@
 # Advanced Multi-Modal Molecular Property Prediction Platform
 
 >A highly extensible, research-grade platform for molecular property prediction, supporting multi-modal deep learning, advanced pseudo-pair generation, and robust experiment management.
+![png](https://github.com/user-attachments/assets/f99de7e9-aefd-4a34-8d74-7c9e0d5e0806)
 
 ---
 
@@ -77,16 +78,28 @@ See in-file comments and descriptions for all options.
 
 **Basic usage:**
 ```bash
-python train.py --config config/config.json
+python train.py \
+    --task-type classification \
+    --data-path path \
+    --target-column Class/reg \
+    --batch-size 32 \
+    --lr 5e-4 \
+    --epochs 50 \
+    --hard-negative-k -1
 ```
 
 **Advanced examples:** (see `config/config.json` for more)
 ```bash
-# Classification
-python train.py --task-type classification --data-path data/bbbp.csv --target-column p_np --batch-size 32 --lr 5e-4 --epochs 50
-
-# Regression
-python train.py --task-type regression --data-path data/esol.csv --target-column labels --normalize-targets --loss-function mse --early-stop-metric rmse --batch-size 32 --lr 5e-4 --epochs 50
+python train \
+    --task-type regression \
+    --data-path path \
+    --target-column   -- \
+    --normalize-targets \
+    --batch-size 64 \
+    --lr 5e-4 \
+    --epochs 50 \
+    --hard-negative-k 32 \
+    --hard-negative-ratio 0.3
 ```
 
 **Model weights and training history** are saved in `weight/` after each run.
@@ -130,3 +143,4 @@ If you use this platform in your research, please cite the original authors and 
 ---
 
 **Contact:** For collaboration or consulting, please reach out via GitHub or email.
+

@@ -1,0 +1,577 @@
+{
+  "pseudo_pair_hard_negative_k": {
+    "choices": [
+      1,
+      4,
+      8,
+      16,
+      32,
+      64,
+      128,
+      256,
+      384,
+      512,
+      768,
+      1024
+    ],
+    "default": 10,
+    "batch_size_recommendations": {
+      "16": [
+        1,
+        4,
+        8
+      ],
+      "32": [
+        4,
+        8,
+        16
+      ],
+      "64": [
+        8,
+        16,
+        32
+      ],
+      "128": [
+        16,
+        32,
+        64
+      ],
+      "256": [
+        32,
+        64,
+        128
+      ],
+      "512": [
+        64,
+        128,
+        256
+      ],
+      "1024": [
+        128,
+        256,
+        384,
+        512
+      ]
+    },
+    "description": "硬负样本选择数量，必须小于batch_size"
+  },
+  "task_settings": {
+    "task_type": {
+      "choices": [
+        "classification",
+        "regression"
+      ],
+      "default": "classification",
+      "description": "任务类型：分类或回归"
+    }
+  },
+  "data_settings": {
+    "data_path": {
+      "value": "/root/autodl-tmp/AnchorMol/data/bbbp.csv",
+      "description": "数据文件路径，CSV格式，需包含smiles列"
+    },
+    "target_column": {
+      "value": "p_np",
+      "alternatives": [
+        "labels",
+        "label",
+        "y"
+      ],
+      "description": "目标列名，根据数据集调整"
+    },
+    "split_type": {
+      "choices": [
+        "scaffold",
+        "random"
+      ],
+      "default": "scaffold",
+      "description": "数据划分方式"
+    },
+    "train_val_test_ratio": {
+      "train": 0.8,
+      "val": 0.1,
+      "test": 0.1,
+      "recommended_ranges": {
+        "train": [
+          0.6,
+          0.9
+        ],
+        "val": [
+          0.05,
+          0.2
+        ],
+        "test": [
+          0.05,
+          0.2
+        ]
+      },
+      "description": "数据集划分比例，和必须为1.0"
+    },
+    "normalize_targets": {
+      "choices": [
+        true,
+        false
+      ],
+      "default": false,
+      "only_if": "task_type=regression",
+      "description": "是否标准化目标值（仅回归任务）"
+    }
+  },
+  "model_paths": {
+    "bert_path": {
+      "value": "/root/autodl-tmp/AnchorMol/ChemBERTa-77M-MLM",
+      "description": "ChemBERTa预训练模型路径"
+    },
+    "grover_path": {
+      "value": "/root/autodl-tmp/AnchorMol/GROVER",
+      "description": "GROVER预训练模型路径"
+    }
+  },
+  "training_core": {
+    "epochs": {
+      "range": {
+        "min": 20,
+        "max": 200
+      },
+      "suggested": [
+        50,
+        100
+      ],
+      "default": 50,
+      "description": "训练轮数"
+    },
+    "batch_size": {
+      "choices": [
+        16,
+        32,
+        64,
+        128
+      ],
+      "default": 32,
+      "gpu_memory_guide": {
+        "16": "适合8GB GPU",
+        "32": "适合12GB GPU",
+        "64": "适合16GB+ GPU"
+      }
+    },
+    "lr": {
+      "range": {
+        "min": 1e-5,
+        "max": 3e-3,
+        "logscale": true
+      },
+      "suggested": [
+        1e-4,
+        3e-4,
+        5e-4,
+        1e-3
+      ],
+      "default": 5e-4,
+      "description": "学习率 - 最重要的超参数"
+    },
+    "weight_decay": {
+      "range": {
+        "min": 0.0,
+        "max": 1e-3
+      },
+      "suggested": [
+        0.0,
+        1e-5,
+        1e-4,
+        5e-4
+      ],
+      "default": 1e-4,
+      "description": "L2正则化权重"
+    },
+    "scheduler": {
+      "choices": [
+        "none",
+        "cosine",
+        "step",
+        "plateau"
+      ],
+      "default": "cosine",
+      "recommendations": {
+        "classification": "plateau",
+        "regression": "cosine"
+      }
+    },
+    "seed": {
+      "range": {
+        "min": 1,
+        "max": 9999
+      },
+      "suggested": [
+        42,
+        3407,
+        2025
+      ],
+      "default": 42,
+      "description": "随机种子，用于结果复现"
+    }
+  },
+  "model_architecture": {
+    "fusion_type": {
+      "choices": [
+        "mean",
+        "concat_mlp",
+        "attention"
+      ],
+      "default": "concat_mlp",
+      "recommendations": {
+        "classification": "concat_mlp",
+        "regression": "attention"
+      },
+      "description": "特征融合策略"
+    },
+    "dropout_rate": {
+      "range": {
+        "min": 0.0,
+        "max": 0.5
+      },
+      "suggested": [
+        0.1,
+        0.2,
+        0.3
+      ],
+      "default": 0.2,
+      "description": "Dropout率，防止过拟合"
+    },
+    "output_activation": {
+      "choices": [
+        "none",
+        "sigmoid",
+        "relu"
+      ],
+      "default": "none",
+      "only_if": "task_type=regression",
+      "description": "输出层激活函数"
+    }
+  },
+  "loss_configuration": {
+    "loss_function": {
+      "choices": [
+        "mse",
+        "mae",
+        "huber"
+      ],
+      "default": "mse",
+      "only_if": "task_type=regression",
+      "recommendations": {
+        "noisy_data": "huber",
+        "clean_data": "mse"
+      }
+    },
+    "huber_delta": {
+      "range": {
+        "min": 0.1,
+        "max": 2.0
+      },
+      "default": 1.0,
+      "only_if": "loss_function=huber",
+      "description": "Huber损失的delta参数"
+    }
+  },
+  "pseudo_pair_settings": {
+    "use_pseudo_pairs": {
+      "choices": [
+        true,
+        false
+      ],
+      "default": true,
+      "warning": "当前代码使用store_true且默认True，命令行无法禁用。建议修改为：parser.add_argument('--use-pseudo-pairs', dest='use_pseudo_pairs', action='store_true'); parser.add_argument('--no-use-pseudo-pairs', dest='use_pseudo_pairs', action='store_false'); parser.set_defaults(use_pseudo_pairs=True)",
+      "description": "是否启用伪对生成（核心创新）"
+    },
+    "pseudo_weight": {
+      "range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "suggested": [
+        0.05,
+        0.1,
+        0.2
+      ],
+      "default": 0.1,
+      "description": "伪对对比损失权重"
+    },
+    "alignment_weight": {
+      "range": {
+        "min": 0.0,
+        "max": 0.1
+      },
+      "suggested": [
+        0.005,
+        0.01,
+        0.02
+      ],
+      "default": 0.01,
+      "description": "特征对齐损失权重"
+    },
+    "temperature": {
+      "range": {
+        "min": 0.03,
+        "max": 0.2
+      },
+      "suggested": [
+        0.05,
+        0.07,
+        0.1,
+        0.15
+      ],
+      "default": 0.07,
+      "description": "对比学习温度参数"
+    },
+    "learnable_temp": {
+      "choices": [
+        true,
+        false
+      ],
+      "default": true,
+      "description": "温度参数是否可学习"
+    },
+    "use_projection_head": {
+      "choices": [
+        true,
+        false
+      ],
+      "default": true,
+      "description": "是否使用投影头"
+    },
+    "use_feature_alignment": {
+      "choices": [
+        true,
+        false
+      ],
+      "default": true,
+      "description": "是否使用特征对齐"
+    },
+    "similarity_metric": {
+      "choices": [
+        "cosine",
+        "euclidean",
+        "dot"
+      ],
+      "default": "cosine",
+      "description": "相似度度量方式"
+    },
+    "hard_negative_mining": {
+      "choices": [
+        true,
+        false
+      ],
+      "default": true,
+      "description": "是否启用硬负样本挖掘"
+    },
+    "momentum": {
+      "range": {
+        "min": 0.0,
+        "max": 0.999
+      },
+      "suggested": [
+        0.0,
+        0.9,
+        0.99,
+        0.999
+      ],
+      "default": 0.999,
+      "description": "动量编码器的动量系数"
+    },
+    "use_memory_bank": {
+      "choices": [
+        true,
+        false
+      ],
+      "default": false,
+      "description": "是否使用记忆库存储负样本"
+    },
+    "queue_size": {
+      "choices": [
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "default": 4096,
+      "only_if": "use_memory_bank=true",
+      "description": "记忆库大小"
+    },
+    "warmup_epochs": {
+      "range": {
+        "min": 0,
+        "max": 10
+      },
+      "default": 5,
+      "description": "预热轮数，逐渐增加伪对损失权重"
+    }
+  },
+  "early_stopping": {
+    "patience": {
+      "range": {
+        "min": 5,
+        "max": 30
+      },
+      "default": 10,
+      "description": "早停耐心值"
+    },
+    "early_stop_metric": {
+      "choices": [
+        "mse",
+        "rmse",
+        "mae",
+        "r2"
+      ],
+      "default": "rmse",
+      "only_if": "task_type=regression",
+      "note": "分类任务自动使用roc_auc"
+    }
+  },
+  "system": {
+    "output_dir": {
+      "value": "./outputs",
+      "description": "输出目录"
+    },
+    "num_workers": {
+      "range": {
+        "min": 0,
+        "max": 16
+      },
+      "suggested": [
+        0,
+        2,
+        4,
+        8
+      ],
+      "default": 4,
+      "description": "数据加载进程数"
+    }
+  },
+  "optimization_guide": {
+    "tuning_priority": [
+      "1. 学习率(lr): 最重要，先尝试 1e-3, 5e-4, 1e-4",
+      "2. 伪对权重(pseudo_weight): 尝试 0.0, 0.05, 0.1, 0.2",
+      "3. Dropout率(dropout_rate): 尝试 0.1, 0.2, 0.3",
+      "4. 批次大小(batch_size): 尝试 16, 32, 64",
+      "5. 融合策略(fusion_type): 尝试不同策略",
+      "6. 温度参数(temperature): 尝试 0.05, 0.07, 0.1"
+    ],
+    "task_specific_recommendations": {
+      "classification": {
+        "optimal_settings": {
+          "scheduler": "plateau",
+          "fusion_type": "concat_mlp",
+          "hard_negative_mining": true,
+          "use_memory_bank": true
+        },
+        "monitor_metrics": [
+          "roc_auc",
+          "f1_score",
+          "accuracy"
+        ],
+        "tips": [
+          "注意类别平衡，scaffold split可能导致类别不均",
+          "使用pos_weight处理类别不平衡",
+          "关注ROC-AUC而非accuracy"
+        ]
+      },
+      "regression": {
+        "optimal_settings": {
+          "normalize_targets": true,
+          "loss_function": "huber",
+          "scheduler": "cosine",
+          "fusion_type": "attention"
+        },
+        "monitor_metrics": [
+          "rmse",
+          "r2",
+          "mae"
+        ],
+        "tips": [
+          "标准化目标值通常能改善训练",
+          "Huber损失对异常值更鲁棒",
+          "关注R²和RMSE的平衡"
+        ]
+      }
+    },
+    "debug_mode": {
+      "settings": {
+        "use_pseudo_pairs": false,
+        "epochs": 10,
+        "batch_size": 16
+      },
+      "purpose": "快速验证模型基础功能"
+    },
+    "production_mode": {
+      "settings": {
+        "epochs": 100,
+        "patience": 20,
+        "use_pseudo_pairs": true,
+        "hard_negative_mining": true,
+        "use_memory_bank": true
+      },
+      "purpose": "最佳性能设置"
+    },
+    "common_issues": {
+      "overfitting": [
+        "增加dropout_rate至0.3-0.4",
+        "增加weight_decay至5e-4",
+        "减少epochs或使用early_stopping",
+        "增加数据增强（如果可能）"
+      ],
+      "underfitting": [
+        "增加模型容量（fusion_type改为concat_mlp）",
+        "增加epochs",
+        "减少dropout_rate至0.1",
+        "增加学习率"
+      ],
+      "unstable_training": [
+        "减少学习率",
+        "使用warmup_epochs",
+        "检查数据质量",
+        "使用gradient clipping（代码已实现）"
+      ],
+      "class_imbalance": [
+        "代码自动计算pos_weight",
+        "考虑使用focal loss（需要修改代码）",
+        "确保validation set包含所有类别"
+      ]
+    }
+  },
+  "command_examples": {
+    "classification_basic": "python train-claude-class-reg.py --task-type classification --data-path /path/to/data.csv --target-column p_np --batch-size 32 --lr 5e-4 --epochs 50",
+    "classification_advanced": "python train-claude-class-reg.py --task-type classification --data-path /path/to/data.csv --target-column p_np --fusion-type concat_mlp --use-pseudo-pairs --pseudo-weight 0.1 --hard-negative-mining --use-memory-bank --batch-size 32 --lr 5e-4 --epochs 100 --patience 15",
+    "regression_basic": "python train-claude-class-reg.py --task-type regression --data-path /path/to/data.csv --target-column labels --normalize-targets --loss-function mse --early-stop-metric rmse --batch-size 32 --lr 5e-4 --epochs 50",
+    "regression_advanced": "python train-claude-class-reg.py --task-type regression --data-path /path/to/data.csv --target-column logP --normalize-targets --loss-function huber --huber-delta 0.5 --fusion-type attention --use-pseudo-pairs --pseudo-weight 0.15 --temperature 0.1 --early-stop-metric r2 --batch-size 64 --lr 3e-4 --epochs 100",
+    "debug_mode": "python train-claude-class-reg.py --task-type classification --data-path /path/to/data.csv --target-column label --epochs 10 --batch-size 16 --lr 1e-3"
+  },
+  "dataset_notes": {
+    "bbbp": {
+      "task_type": "classification",
+      "target_column": "p_np",
+      "recommended_settings": {
+        "lr": 5e-4,
+        "batch_size": 32,
+        "epochs": 50
+      }
+    },
+    "esol": {
+      "task_type": "regression",
+      "target_column": "measured log solubility in mols per litre",
+      "recommended_settings": {
+        "lr": 3e-4,
+        "batch_size": 32,
+        "normalize_targets": true,
+        "loss_function": "huber"
+      }
+    },
+    "lipophilicity": {
+      "task_type": "regression",
+      "target_column": "exp",
+      "recommended_settings": {
+        "lr": 5e-4,
+        "batch_size": 64,
+        "normalize_targets": true
+      }
+    }
+  }
+}

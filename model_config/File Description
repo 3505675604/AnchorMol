@@ -1,0 +1,39 @@
+
+# Model Download and Description
+
+## ChemBERTa-77M-MLM
+- Source: [HuggingFace DeepChem/ChemBERTa-77M-MLM](https://huggingface.co/DeepChem/ChemBERTa-77M-MLM)
+- Download:
+    ```bash
+    git clone https://huggingface.co/DeepChem/ChemBERTa-77M-MLM
+    ```
+- Usage: Pretrained transformer for SMILES sequence embedding.
+
+## GROVER
+- Source: [HuggingFace PoetschLab/GROVER](https://huggingface.co/PoetschLab/GROVER)
+- Download:
+    ```bash
+    git clone https://huggingface.co/PoetschLab/GROVER
+    ```
+- Usage: Graph neural network for molecular graph feature extraction.
+
+## DimeNet
+- Source: [GitHub gasteigerjo/dimenet](https://github.com/gasteigerjo/dimenet)
+- Download:
+    ```bash
+    git clone https://github.com/gasteigerjo/dimenet.git
+    ```
+- Usage: Directional message passing neural network for molecular property prediction.
+
+---
+
+**Environment requirements:**
+- Python 3.7+
+- torch, transformers, rdkit, numpy, pandas, scikit-learn, etc.
+- For DimeNet, see its repo for additional dependencies.
+
+**Note:**
+Download the above models before running training or inference scripts. Place the downloaded folders in the appropriate model path as required by your code/config.
+
+
+

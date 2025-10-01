@@ -7,7 +7,7 @@
 ---
 
 ## 🚀 Features
-- **Semantic-level learning: By introducing the anchor-center soft matching (ACSM) mechanism and the dynamic center library (DCL), cross-modal semantic alignment is achieved, avoiding the risk of overfitting caused by one-to-one instance matching. This method can simultaneously capture the global skeleton structure and local functional group characteristics of the molecule, improving the model's generalization ability and interpretability.
+- Semantic-level learning: By introducing the anchor-center soft matching (ACSM) mechanism and the dynamic center library (DCL), cross-modal semantic alignment is achieved, avoiding the risk of overfitting caused by one-to-one instance matching. This method can simultaneously capture the global skeleton structure and local functional group characteristics of the molecule, improving the model's generalization ability and interpretability.
 - **Multi-Modal Learning**: Integrates chemical structure, text, and other modalities for improved prediction.
 - **Flexible Task Support**: Handles both classification and regression tasks with dynamic configuration.
 - **Advanced Pseudo-Pair Generation**: Supports hard negative mining, adaptive temperature, and memory bank for contrastive learning.
@@ -143,6 +143,7 @@ If you use this platform in your research, please cite the original authors and 
 ---
 
 **Contact:** For collaboration or consulting, please reach out via GitHub or email.
+
 
 
 

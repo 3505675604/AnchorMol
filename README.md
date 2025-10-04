@@ -1,5 +1,5 @@
 
-# SemMol: Semantic alignment for generalizable multimodal molecular property prediction
+# AnchorMol: Anchor-center soft matching for self-supervised semantic alignment of multimodal molecular representations
 
 >A highly extensible, research-grade platform for molecular property prediction, supporting multi-modal deep learning, advanced pseudo-pair generation, and robust experiment management.
 ![png](https://github.com/user-attachments/assets/f99de7e9-aefd-4a34-8d74-7c9e0d5e0806)
@@ -143,6 +143,7 @@ If you use this platform in your research, please cite the original authors and 
 ---
 
 **Contact:** For collaboration or consulting, please reach out via GitHub or email.
+
 
 
 
